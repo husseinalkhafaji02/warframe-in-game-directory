@@ -23,7 +23,7 @@ app.get('/items/:name', (req, res) => {
     }
 });
 
-// Start the server
+// Start the server balal a fandafn
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
