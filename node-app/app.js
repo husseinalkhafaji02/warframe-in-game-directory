@@ -1,30 +1,38 @@
 //Author: Hussein Alkhafaji 
 //backend app
+// app.js
 const express = require('express');
-const Items = require('warframe-items');
 const app = express();
+const port = 3000;
+const fs = require('fs');
+const path = require('path');
 
-// Initialize Warframe items
-const items = new Items();
+// Serve static files (like index.html)
+app.use(express.static(path.join(__dirname)));
 
-// Endpoint to get all items
-app.get('/items', (req, res) => {
-    res.json(items);
+// Load Warframe items data
+const itemsPath = path.join(__dirname, 'node_modules', 'warframe-items', 'data', 'json', "All.json");
+let items = [];
+
+fs.readFile(itemsPath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading items file:', err);
+        return;
+    }
+    items = JSON.parse(data);
 });
 
-// Endpoint to get a specific item by name
-app.get('/items/:name', (req, res) => {
-    const itemName = req.params.name;
-    const item = items.find(i => i.name.toLowerCase() === itemName.toLowerCase());
+// Endpoint to get item by name
+app.get('/item/:name', (req, res) => {
+    const itemName = req.params.name.toLowerCase();
+    const item = items.find(i => i.name && i.name.toLowerCase() === itemName);
     if (item) {
         res.json(item);
     } else {
-        res.status(404).send('Item not found');
+        res.status(404).json({ error: 'Item not found' });
     }
 });
 
-// Start the server balal a fandafn
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

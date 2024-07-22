@@ -1,0 +1,39 @@
+<!--html template -->
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warframe Item Directory</title>
+</head>
+
+<body>
+    <h1>Warframe Item Directory</h1>
+    <form id="searchForm">
+        <label for="itemName">Enter Item Name:</label>
+        <input type="text" id="itemName" name="itemName">
+        <button type="submit">Search</button>
+    </form>
+    <pre id="result"></pre>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const itemName = document.getElementById('itemName').value;
+            fetch(`/item/${itemName}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('result').textContent = 'Error fetching item data';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
